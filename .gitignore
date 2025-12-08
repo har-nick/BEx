@@ -1,0 +1,6 @@
+build
+kotlin-js-store
+.gradle
+.kotlin
+.idea/artifacts
+.idea/caches

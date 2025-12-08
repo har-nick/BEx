@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Valkyrie.Settings">
+    <option name="iconPackDestination" value="$PROJECT_DIR$/composeApp/src/commonMain/kotlin/uk/co/harnick/bex/presentation/icons" />
+    <option name="iconPackName" value="Icons" />
+    <option name="iconPackPackage" value="uk.co.harnick.bex.presentation.icons" />
+    <option name="mode" value="IconPack" />
+    <option name="packageName" value="uk.co.harnick.bex.presentation.icons" />
+  </component>
+</project>
