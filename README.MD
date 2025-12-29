@@ -10,7 +10,7 @@ BEx is a Bandcamp library exporter, built with [BandKit](https://github.com/har-
 
 ## How-To
 1) Click [here](https://github.com/har-nick/BEx/releases/latest) to find the latest release.
-2) Run BEx and input your Bandcamp token. You can find out how to get our token by clicking [here](https://github.com/har-nick/BandKit/wiki/Your-Token#desktop-web).
+2) Run BEx and input your Bandcamp token. You can find out how to get your token by clicking [here](https://github.com/har-nick/BandKit/wiki/Your-Token#desktop-web).
 3) Select the albums from your library you want to download, and (you guessed it) hit download.
 
 ## Contribution
