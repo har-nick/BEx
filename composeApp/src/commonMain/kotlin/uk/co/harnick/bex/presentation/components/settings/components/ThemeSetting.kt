@@ -25,7 +25,7 @@ import uk.co.harnick.bex.presentation.icons.Icons
 import uk.co.harnick.bex.presentation.state.LocalSettings
 
 @Composable
-fun DarkModeSetting() {
+fun ThemeSetting() {
     val currentSettings = LocalSettings.current
 
     fun onUpdateDarkMode(mode: ThemeMode) {
@@ -35,7 +35,7 @@ fun DarkModeSetting() {
     }
 
     ListItem(
-        headlineContent = { Text("Dark Mode") },
+        headlineContent = { Text("Theme") },
         leadingContent = {
             Icon(
                 imageVector = Icons.Contrast,

@@ -31,8 +31,8 @@ fun TopBar(
     onUpdateSearchQuery: (String) -> Unit,
     onToggleSettingsMenu: () -> Unit,
     onLogout: () -> Unit,
-    onPauseDownload: (LibraryItem) -> Unit,
-    onResumeDownload: (LibraryItem) -> Unit,
+    onCancelDownload: (LibraryItem) -> Unit,
+    onStartDownload: (LibraryItem) -> Unit,
     onClearDownloads: () -> Unit,
 ) {
     val account = LocalAccount.current
@@ -71,8 +71,8 @@ fun TopBar(
                     downloadQueue = downloadQueue,
                     isVisible = downloadMenuVisible,
                     onDismiss = { downloadMenuVisible = false },
-                    onPauseDownload = onPauseDownload,
-                    onResumeDownload = onResumeDownload,
+                    onCancelDownload = onCancelDownload,
+                    onStartDownload = onStartDownload,
                     onClearDownloads = {
                         downloadMenuVisible = false
                         onClearDownloads()

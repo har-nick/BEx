@@ -9,7 +9,6 @@ class DownloadParams(
     val maxConcurrentDownloads: Int,
     val cacheDir: Path,
     val encodingPriority: List<BandKit.Encoding>,
-    val extractArchive: Boolean,
     val exportDir: Path
 )
 
@@ -17,6 +16,5 @@ fun Settings.toDownloadParams() = DownloadParams(
     maxConcurrentDownloads = maxConcurrentDownloads,
     cacheDir = cacheDir.toKotlinxIoPath(),
     encodingPriority = filteredEncodingPriority,
-    extractArchive = extractMusicArchives,
     exportDir = exportDir.toKotlinxIoPath()
 )

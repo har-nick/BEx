@@ -111,20 +111,19 @@ class ViewModel(
             .collect { clientFlow.update { createNewClient() } }
     }
 
-    fun refreshLibraryData() =
-        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            mutableState.update {
-                it.copy(isLoadingLibrary = true)
-            }
-
-            val libraryData = state.value.account
-                ?.let { GetLibraryItems(bandKit.value, it.id) }
-                ?: emptyList()
-
-            mutableState.update {
-                it.copy(libraryData = libraryData, isLoadingLibrary = false)
-            }
+    fun refreshLibraryData() = viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+        mutableState.update {
+            it.copy(isLoadingLibrary = true)
         }
+
+        val libraryData = state.value.account
+            ?.let { GetLibraryItems(bandKit.value, it.id) }
+            ?: emptyList()
+
+        mutableState.update {
+            it.copy(libraryData = libraryData, isLoadingLibrary = false)
+        }
+    }
 
     fun updateSearchQuery(query: String) = mutableState.update { it.copy(searchQuery = query) }
 
@@ -132,10 +131,6 @@ class ViewModel(
     // DOWNLOADING
     //
     private val manager = DownloadManager(bandKit)
-
-    fun downloadItem(item: LibraryItem) {
-        manager.enqueue(item)
-    }
 
     @OptIn(FlowPreview::class)
     private fun syncDownloadQueue() = viewModelScope.launch {
@@ -154,8 +149,8 @@ class ViewModel(
             }
     }
 
-    fun resumeDownload(libraryItem: LibraryItem) = manager.enqueue(libraryItem)
-    fun pauseDownload(libraryItem: LibraryItem) = manager.pause(libraryItem)
+    fun downloadItem(item: LibraryItem) = manager.enqueue(item)
+    fun cancelItem(item: LibraryItem) = manager.cancel(item)
     fun clearQueue() = manager.clear()
 
     //
@@ -177,17 +172,21 @@ class ViewModel(
                 duration = Indefinite,
                 action = SnackbarData.ActionData(
                     label = "Report",
-                    onClick = { onEvent(DisplayErrorReportMenu(errorEvent.throwable)) }
+                    onClick = { sendEvent(DisplayErrorReportMenu(errorEvent.throwable)) }
                 )
             )
         )
     }
 
-    private fun onEvent(event: Event) {
+    private fun sendEvent(event: Event) {
         when (event) {
             is DisplayErrorReportMenu -> viewModelScope.launch { _errorMenu.send(event.throwable) }
             is DisplayErrorSnackbar -> sendErrorSnackbar(event)
         }
+    }
+
+    fun toggleSettingsPanel(visible: Boolean) = mutableState.update {
+        it.copy(settingsPanelVisible = visible)
     }
 
     init {
