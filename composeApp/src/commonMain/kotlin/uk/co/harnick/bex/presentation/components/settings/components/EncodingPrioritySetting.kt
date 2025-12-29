@@ -20,6 +20,7 @@ import uk.co.harnick.bex.data.local.SettingsManager
 import uk.co.harnick.bex.presentation.components.settings.EncodingPriorityList
 import uk.co.harnick.bex.presentation.icons.ArrowDropDown
 import uk.co.harnick.bex.presentation.icons.Icons
+import uk.co.harnick.bex.presentation.icons.Sort
 import uk.co.harnick.bex.presentation.state.LocalSettings
 
 @Composable
@@ -39,14 +40,20 @@ fun EncodingPrioritySetting() {
 
         ListItem(
             headlineContent = { Text("Encoding Priority") },
+            modifier = Modifier
+                .pointerHoverIcon(PointerIcon.Hand)
+                .clickable { isExpanded = !isExpanded },
+            leadingContent = {
+                Icon(
+                    imageVector = Icons.Sort,
+                    contentDescription = null
+                )
+            },
             supportingContent = {
                 Text(
                     "BEx will attempt to download files in descending order. Disabled codecs will be ignored entirely."
                 )
             },
-            modifier = Modifier
-                .pointerHoverIcon(PointerIcon.Hand)
-                .clickable { isExpanded = !isExpanded },
             trailingContent = {
                 Icon(
                     imageVector = Icons.ArrowDropDown,

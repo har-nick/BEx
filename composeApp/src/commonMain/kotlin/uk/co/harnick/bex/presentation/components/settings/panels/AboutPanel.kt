@@ -1,12 +1,17 @@
 package uk.co.harnick.bex.presentation.components.settings.panels
 
 import BEx.composeApp.BuildConfig
+import androidx.compose.foundation.LocalScrollbarStyle
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -14,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -82,159 +88,179 @@ fun AboutPanel() {
         Surface(
             shape = CardDefaults.shape
         ) {
-            LazyColumn {
-                item {
-                    ListItem(
-                        headlineContent = { Text("BandKit") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/har-nick/BandKit")
+            val listState = rememberLazyListState()
+
+            // We need a container that provides constraints for scroll bar to be visible
+            Box {
+                LazyColumn(
+                    state = listState
+                ) {
+                    item {
+                        ListItem(
+                            headlineContent = { Text("BandKit") },
+                            modifier = Modifier
+                                .clickable {
+                                    uriHandler.openUri("https://github.com/har-nick/BandKit")
+                                }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "A Kotlin Multiplatform library to interface with Bandcamp's API",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
                             }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "A Kotlin Multiplatform library to interface with Bandcamp's API",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    )
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text("Coil") },
+                            modifier = Modifier
+                                .clickable {
+                                    uriHandler.openUri("https://github.com/coil-kt/coil")
+                                }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "Image loading for Android and Compose Multiplatform.",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text("Compose Multiplatform") },
+                            modifier = Modifier
+                                .clickable {
+                                    uriHandler.openUri("https://github.com/JetBrains/compose-multiplatform")
+                                }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "Compose Multiplatform, a modern UI framework for Kotlin that makes building performant and beautiful user interfaces easy and enjoyable. ",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text("FileKit") },
+                            modifier = Modifier
+                                .clickable {
+                                    uriHandler.openUri("https://github.com/vinceglb/FileKit")
+                                }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "Pick and save Files, Medias and Folder for Kotlin Multiplatform / KMP and Compose Multiplatform / CMP",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text("kotlinx.coroutines") },
+                            modifier = Modifier
+                                .clickable {
+                                    uriHandler.openUri("https://github.com/Kotlin/kotlinx.coroutines")
+                                }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "Library support for Kotlin coroutines",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text("KStore") },
+                            modifier = Modifier
+                                .clickable {
+                                    uriHandler.openUri("https://github.com/xxfast/KStore")
+                                }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "A tiny Kotlin multiplatform library that assists in saving and restoring objects to and from disk using kotlinx.coroutines, kotlinx.serialisation and kotlinx.io",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text("Ktor") },
+                            modifier = Modifier
+                                .clickable {
+                                    uriHandler.openUri("https://github.com/ktorio/ktor")
+                                }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "Framework for quickly creating connected applications in Kotlin with minimal effort",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = {
+                                @Suppress("SpellCheckingInspection")
+                                Text("MaterialKolor")
+                            },
+                            modifier = Modifier
+                                .clickable { uriHandler.openUri("https://github.com/jordond/MaterialKolor") }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "Generate a dynamic Material3 color scheme from a seed color",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text("Reorderable") },
+                            modifier = Modifier
+                                .clickable {
+                                    uriHandler.openUri("https://github.com/Calvin-LL/Reorderable")
+                                }
+                                .pointerHoverIcon(PointerIcon.Hand),
+                            supportingContent = {
+                                Text(
+                                    text = "Reorder items in Lists and Grids in Jetpack Compose and Compose Multiplatform with drag and drop.",
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        )
+                    }
                 }
 
-                item {
-                    ListItem(
-                        headlineContent = { Text("Coil") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/coil-kt/coil")
-                            }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "Image loading for Android and Compose Multiplatform.",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
+                VerticalScrollbar(
+                    adapter = rememberScrollbarAdapter(listState),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 8.dp, end = 8.dp, bottom = 8.dp),
+                    style = LocalScrollbarStyle.current.copy(
+                        thickness = 4.dp,
+                        hoverColor = MaterialTheme.colorScheme.onSurface,
+                        unhoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3F)
                     )
-                }
-
-                item {
-                    ListItem(
-                        headlineContent = { Text("Compose Multiplatform") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/JetBrains/compose-multiplatform")
-                            }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "Compose Multiplatform, a modern UI framework for Kotlin that makes building performant and beautiful user interfaces easy and enjoyable. ",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    )
-                }
-
-                item {
-                    ListItem(
-                        headlineContent = { Text("FileKit") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/vinceglb/FileKit")
-                            }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "Pick and save Files, Medias and Folder for Kotlin Multiplatform / KMP and Compose Multiplatform / CMP",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    )
-                }
-
-                item {
-                    ListItem(
-                        headlineContent = { Text("kotlinx.coroutines") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/Kotlin/kotlinx.coroutines")
-                            }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "Library support for Kotlin coroutines",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    )
-                }
-
-                item {
-                    ListItem(
-                        headlineContent = { Text("KStore") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/xxfast/KStore")
-                            }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "A tiny Kotlin multiplatform library that assists in saving and restoring objects to and from disk using kotlinx.coroutines, kotlinx.serialisation and kotlinx.io",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    )
-                }
-
-                item {
-                    ListItem(
-                        headlineContent = { Text("Ktor") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/ktorio/ktor")
-                            }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "Framework for quickly creating connected applications in Kotlin with minimal effort",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    )
-                }
-
-                item {
-                    ListItem(
-                        headlineContent = { Text("MaterialKolor") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/jordond/MaterialKolor")
-                            }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "Generate a dynamic Material3 color sheme from a seed color",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    )
-                }
-
-                item {
-                    ListItem(
-                        headlineContent = { Text("Reorderable") },
-                        modifier = Modifier
-                            .clickable {
-                                uriHandler.openUri("https://github.com/Calvin-LL/Reorderable")
-                            }
-                            .pointerHoverIcon(PointerIcon.Hand),
-                        supportingContent = {
-                            Text(
-                                text = "Reorder items in Lists and Grids in Jetpack Compose and Compose Multiplatform with drag and drop.",
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    )
-                }
+                )
             }
         }
     }

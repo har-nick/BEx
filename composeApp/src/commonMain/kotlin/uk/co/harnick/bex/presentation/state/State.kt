@@ -6,18 +6,22 @@ import uk.co.harnick.bex.domain.model.Account
 import uk.co.harnick.bex.domain.model.LibraryItem
 
 data class State(
-    val error: Throwable? = null,
     val isLoggingIn: Boolean = false,
     val isLoadingLibrary: Boolean = false,
     val searchQuery: String = "",
-    val account: Account? = null,
     val downloadsActive: Boolean = false,
     val downloadQueue: Map<LibraryItem, DownloadState> = emptyMap(),
+    val settingsPanelVisible: Boolean = false,
+    val account: Account? = null,
+    val error: Throwable? = null,
     val libraryData: List<LibraryItem>? = null,
 ) {
     @Transient
-    val searchResults: List<LibraryItem> = libraryData?.filter {
-        val predicates = listOf(it.artist.name, it.title) + it.trackList.map { it.title }
-        predicates.any { it.contains(searchQuery, ignoreCase = true) }
-    } ?: emptyList()
+    val searchResults: List<LibraryItem> = libraryData
+        ?.filter {
+            val trackTitles = it.trackList.map { track -> track.title }
+            val predicates = listOf(it.artist.name, it.title) + trackTitles
+            predicates.any { predicate -> predicate.contains(searchQuery, ignoreCase = true) }
+        }
+        ?: emptyList()
 }

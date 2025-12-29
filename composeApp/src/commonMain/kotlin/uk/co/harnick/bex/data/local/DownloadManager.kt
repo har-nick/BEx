@@ -25,6 +25,15 @@ class DownloadManager(
 ) {
     private val scope = CoroutineScope(Dispatchers.IO)
 
+    private val downloadParams = SettingsManager.settings
+        .filterNotNull()
+        .map { it.toDownloadParams() }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Lazily,
+            initialValue = Settings().toDownloadParams()
+        )
+
     private val _allTasks = MutableStateFlow<Map<LibraryItem, DownloadTask>>(emptyMap())
     val allTasks: Map<LibraryItem, DownloadTask>
         get() = _allTasks.value
@@ -39,18 +48,11 @@ class DownloadManager(
             if (stateFlows.isEmpty()) flowOf(emptyMap())
             else combine(stateFlows) { pairs -> pairs.toMap() }
         }
-        .stateIn(scope, SharingStarted.Eagerly, emptyMap())
-
-    private val downloadParams = SettingsManager.settings
-        .filterNotNull()
-        .map { it.toDownloadParams() }
         .stateIn(
             scope = scope,
-            started = SharingStarted.Lazily,
-            initialValue = Settings().toDownloadParams()
+            started = SharingStarted.Eagerly,
+            initialValue = emptyMap()
         )
-
-    private val workerPool = DownloadWorkerPool(_allTasks, downloadParams, scope)
 
     fun enqueue(item: LibraryItem) {
         val task = DownloadTask(item, bandKit.value, downloadParams.value)
@@ -58,18 +60,13 @@ class DownloadManager(
         task.start(scope)
     }
 
-    fun pause(item: LibraryItem) {
-        allTasks[item]?.pause()
-        workerPool.notifyTaskUpdated()
-    }
-
     fun cancel(item: LibraryItem) {
         allTasks[item]?.cancel()
-        workerPool.notifyTaskUpdated()
     }
 
     fun clear() {
-        allTasks.keys.forEach(::cancel)
+        val snapshot = allTasks.toMap()
+        snapshot.forEach { (item, _) -> cancel(item) }
         _allTasks.value = emptyMap()
     }
 }

@@ -31,8 +31,6 @@ data class Settings(
     @Serializable(with = PlatformFileSerializer::class)
     val exportDir: PlatformFile = MusicDirectory.getDefault(),
 
-    val extractMusicArchives: Boolean = true,
-
     val encodingPriority: List<Pair<BandKit.Encoding, Boolean>> = listOf(
         FLAC to true,
         ALAC to true,

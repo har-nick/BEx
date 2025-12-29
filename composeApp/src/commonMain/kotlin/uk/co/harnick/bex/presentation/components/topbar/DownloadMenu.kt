@@ -32,8 +32,8 @@ fun DownloadMenu(
     isVisible: Boolean,
     downloadQueue: Map<LibraryItem, DownloadState>,
     onDismiss: () -> Unit,
-    onPauseDownload: (LibraryItem) -> Unit,
-    onResumeDownload: (LibraryItem) -> Unit,
+    onCancelDownload: (LibraryItem) -> Unit,
+    onStartDownload: (LibraryItem) -> Unit,
     onClearDownloads: () -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -86,7 +86,7 @@ fun DownloadMenu(
                                 items = sortedQueue,
                                 key = { (item, _) -> item.id }
                             ) { (item, state) ->
-                                DownloadItem(item, state, onPauseDownload, onResumeDownload)
+                                DownloadItem(item, state, onCancelDownload, onStartDownload)
                             }
                         }
                     }

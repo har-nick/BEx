@@ -31,7 +31,7 @@ fun LibraryScreen(
     Scaffold(
         floatingActionButton = {
             LibraryFABs(
-                hasItemsSelected = selectedItems == state.libraryData,
+                hasItemsSelected = (selectedItems == state.libraryData),
                 onToggleItems = {
                     selectedItems = when (selectedItems.isEmpty()) {
                         true -> state.libraryData ?: emptyList()

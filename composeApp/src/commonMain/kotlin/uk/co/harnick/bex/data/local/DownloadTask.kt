@@ -7,7 +7,6 @@ import io.github.vinceglb.filekit.utils.div
 import io.github.vinceglb.filekit.utils.toFile
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.request.header
 import io.ktor.http.contentType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -23,15 +22,14 @@ import uk.co.harnick.bandkit.core.BandKit
 import uk.co.harnick.bandkit.core.BandKit.Encoding
 import uk.co.harnick.bandkit.library.fetchItemDownloadLinks
 import uk.co.harnick.bex.data.remote.DownloadState
-import uk.co.harnick.bex.data.remote.DownloadState.Failed.Cancelled
-import uk.co.harnick.bex.data.remote.DownloadState.Failed.Cancelled.throwable
+import uk.co.harnick.bex.data.remote.DownloadState.Cancelled
 import uk.co.harnick.bex.data.remote.DownloadState.Failed.Error
 import uk.co.harnick.bex.data.remote.DownloadState.Failed.InvalidContentType
 import uk.co.harnick.bex.data.remote.DownloadState.Failed.MissingDownloadUrl
 import uk.co.harnick.bex.data.remote.DownloadState.Finished
 import uk.co.harnick.bex.data.remote.DownloadState.InProgress.Downloading
 import uk.co.harnick.bex.data.remote.DownloadState.InProgress.Extracting
-import uk.co.harnick.bex.data.remote.DownloadState.Paused
+import uk.co.harnick.bex.data.remote.DownloadState.InProgress.FetchingUrl
 import uk.co.harnick.bex.data.remote.DownloadState.Queued
 import uk.co.harnick.bex.data.remote.isValid
 import uk.co.harnick.bex.domain.model.LibraryItem
@@ -64,11 +62,7 @@ class DownloadTask(
     ) {
         state.value = Downloading()
 
-        val rangeHeader = (state.value as? Paused)?.offset ?: 0
-
-        val response = bandKit.client.get(url) {
-            header("Range", "bytes=${rangeHeader}-")
-        }
+        val response = bandKit.client.get(url)
 
         // Bandcamp can often return a html file if it smells a bad request
         // What's the solution to this? No idea lol
@@ -77,10 +71,7 @@ class DownloadTask(
             return
         }
 
-        SystemFileSystem.sink(
-            path = cacheTarget,
-            append = (rangeHeader > 0)
-        ).buffered().use { sink ->
+        SystemFileSystem.sink(cacheTarget).buffered().use { sink ->
             response.body<Source>().buffered().transferTo(sink)
         }
     }
@@ -89,7 +80,7 @@ class DownloadTask(
         cacheTarget: Path,
         exportTarget: Path
     ) {
-        if (params.extractArchive && item.type != Track) {
+        if (item.type != Track) {
             state.value = Extracting
 
             ZipFile(cacheTarget.toString()).extractAll(exportTarget.toString())
@@ -124,10 +115,15 @@ class DownloadTask(
     fun start(scope: CoroutineScope) {
         job = scope.launch {
             try {
-                val (encoding, url) = resolveDownloadUrl(item) ?: run {
-                    state.value = MissingDownloadUrl(throwable)
-                    return@launch
-                }
+                state.value = FetchingUrl
+
+                val downloadUrl = runCatching { resolveDownloadUrl(item) }
+                    .getOrElse {
+                        state.value = MissingDownloadUrl(it)
+                        return@launch
+                    }
+
+                val (encoding, url) = downloadUrl!!
 
                 val cacheTarget = computeCachePath(encoding)
                 val exportTarget = computeExportPath()
@@ -147,15 +143,8 @@ class DownloadTask(
         }
     }
 
-    fun pause() {
-        val progress = (state.value as? Downloading)?.progress ?: 0F
-        val offset = (state.value as? Downloading)?.offset ?: 0L
-        job?.cancel()
-        state.value = Paused(progress, offset)
-    }
-
     fun cancel() {
         job?.cancel()
-        state.value = Cancelled
+        if (state.value !is Finished) state.value = Cancelled
     }
 }

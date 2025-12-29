@@ -20,8 +20,8 @@ import uk.co.harnick.bex.domain.model.LibraryItem
 fun LazyItemScope.DownloadItem(
     item: LibraryItem,
     state: DownloadState,
-    onPauseDownload: (LibraryItem) -> Unit,
-    onResumeDownload: (LibraryItem) -> Unit
+    onCancelDownload: (LibraryItem) -> Unit,
+    onStartDownload: (LibraryItem) -> Unit
 ) {
     ListItem(
         headlineContent = {
@@ -45,8 +45,8 @@ fun LazyItemScope.DownloadItem(
         trailingContent = {
             DownloadState(
                 state = state,
-                onPauseDownload = { onPauseDownload(item) },
-                onResumeDownload = { onResumeDownload(item) }
+                onCancelDownload = { onCancelDownload(item) },
+                onResumeDownload = { onStartDownload(item) }
             )
         }
     )

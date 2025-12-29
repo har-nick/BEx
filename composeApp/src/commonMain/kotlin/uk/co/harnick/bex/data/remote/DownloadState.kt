@@ -11,8 +11,8 @@ sealed interface DownloadState {
         data object Extracting : InProgress
     }
 
-    data class Paused(val progress: Float, val offset: Long) : DownloadState
     data class Finished(val path: Path) : DownloadState
+    data object Cancelled : DownloadState
 
     sealed class Failed(
         val throwable: Throwable?,
@@ -28,11 +28,6 @@ sealed interface DownloadState {
             reason = "Download URL couldn't be found."
         )
 
-        data object Cancelled : Failed(
-            throwable = null,
-            reason = "Download cancelled."
-        )
-
         data class InvalidContentType(private val type: String) : Failed(
             throwable = null,
             reason = "Invalid Content-Type: \"$type\" in download response."
@@ -42,9 +37,9 @@ sealed interface DownloadState {
     companion object {
         fun sorted(state: DownloadState): Int = when (state) {
             is InProgress -> 1
-            is Paused -> 2
-            is Queued -> 3
-            is Failed -> 4
+            is Queued -> 2
+            is Failed -> 3
+            is Cancelled -> 4
             is Finished -> 5
         }
     }

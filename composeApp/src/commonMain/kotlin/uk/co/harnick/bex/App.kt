@@ -39,7 +39,6 @@ import java.io.File
 @Preview
 @Composable
 internal fun App() {
-    var settingsPanelVisible by remember { mutableStateOf(false) }
     val settings by SettingsManager.settings.collectAsState()
 
     val useDarkTheme = when (settings.theme) {
@@ -69,10 +68,10 @@ internal fun App() {
                             downloadQueue = state.downloadQueue,
                             searchQuery = state.searchQuery,
                             onUpdateSearchQuery = vm::updateSearchQuery,
-                            onToggleSettingsMenu = { settingsPanelVisible = true },
+                            onToggleSettingsMenu = { vm.toggleSettingsPanel(true) },
                             onLogout = vm::logout,
-                            onPauseDownload = vm::pauseDownload,
-                            onResumeDownload = vm::resumeDownload,
+                            onCancelDownload = vm::cancelItem,
+                            onStartDownload = vm::downloadItem,
                             onClearDownloads = vm::clearQueue,
                         )
                     },
@@ -102,8 +101,8 @@ internal fun App() {
                     }
                 }
 
-                if (settingsPanelVisible) SettingsPage(
-                    onDismiss = { settingsPanelVisible = false }
+                if (state.settingsPanelVisible) SettingsPage(
+                    onDismiss = { vm.toggleSettingsPanel(false) }
                 )
 
                 var errorMenuVisible by remember { mutableStateOf(false) }
