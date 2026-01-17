@@ -13,6 +13,7 @@ fun AdvancedSettingsPanel() {
         Column {
             CachePathSetting()
             ConfigPathSetting()
+            ClearCacheButton()
         }
     }
 }

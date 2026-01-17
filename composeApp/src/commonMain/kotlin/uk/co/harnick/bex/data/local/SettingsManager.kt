@@ -2,6 +2,7 @@ package uk.co.harnick.bex.data.local
 
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.delete
 import io.github.vinceglb.filekit.div
 import io.github.vinceglb.filekit.exists
 import io.github.vinceglb.filekit.filesDir
@@ -12,7 +13,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import uk.co.harnick.bex.domain.model.Settings
 
@@ -28,29 +32,43 @@ object SettingsManager {
         } else defaultPath
 
         return if (path.exists()) {
-            Json.decodeFromString(path.readString())
+            try {
+                Json.decodeFromString(path.readString())
+            } catch (e: SerializationException) {
+                e.printStackTrace()
+                Settings()
+            }
         } else Settings()
     }
 
-    private val _settings = MutableStateFlow(Settings())
-    val settings: StateFlow<Settings> = _settings
+    val settings: StateFlow<Settings?>
+        field = MutableStateFlow(null)
 
     fun updateSettings(new: Settings) {
-        _settings.value = new
+        settings.value = new
     }
+
+    private fun syncWithSignpost() = settings
+        .onEach {
+            if (it?.settingsDir?.path == signpostPath.path) return@onEach
+
+            val oldSettings =
+                if (signpostPath.exists()) PlatformFile(signpostPath.readString()) else null
+
+            val activePath = when {
+                (it == null) -> defaultPath
+                else -> it.settingsDir
+            }
+
+            oldSettings?.delete()
+            activePath.writeString(Json.encodeToString(it))
+            signpostPath.writeString(activePath.path)
+        }.launchIn(scope)
 
     init {
         scope.launch {
-            _settings.value = loadInitial()
-
-            settings.collect {
-                val activePath = if (it.settingsDir.path.isEmpty()) defaultPath else it.settingsDir
-                activePath.writeString(Json.encodeToString(it))
-
-                if (it.settingsDir.path != signpostPath.path) {
-                    signpostPath.writeString(activePath.path)
-                }
-            }
+            settings.value = loadInitial()
+            syncWithSignpost()
         }
     }
 }

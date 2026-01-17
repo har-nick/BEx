@@ -64,7 +64,7 @@ class DownloadTask(
 
         val response = bandKit.client.get(url)
 
-        // Bandcamp can often return a html file if it smells a bad request
+        // Bandcamp can often return an HTML file if it smells a bad request
         // What's the solution to this? No idea lol
         if (!response.contentType().isValid()) {
             state.value = InvalidContentType(response.contentType().toString())

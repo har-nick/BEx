@@ -17,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.vinceglb.filekit.path
 import okio.Path.Companion.toOkioPath
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import uk.co.harnick.bex.data.local.SettingsManager
+import uk.co.harnick.bex.domain.model.Settings
 import uk.co.harnick.bex.domain.model.Settings.ThemeMode.DARK
 import uk.co.harnick.bex.domain.model.Settings.ThemeMode.FOLLOW_SYSTEM
 import uk.co.harnick.bex.domain.model.Settings.ThemeMode.LIGHT
@@ -36,11 +35,10 @@ import uk.co.harnick.bex.presentation.state.LocalSettings
 import uk.co.harnick.bex.theme.AppTheme
 import java.io.File
 
-@Preview
 @Composable
-internal fun App() {
-    val settings by SettingsManager.settings.collectAsState()
-
+internal fun App(
+    settings: Settings
+) {
     val useDarkTheme = when (settings.theme) {
         FOLLOW_SYSTEM -> isSystemInDarkTheme()
         LIGHT -> false

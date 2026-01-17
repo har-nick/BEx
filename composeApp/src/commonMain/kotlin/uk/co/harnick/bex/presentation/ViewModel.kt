@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -107,6 +108,7 @@ class ViewModel(
 
     private fun syncClientConfig() = viewModelScope.launch {
         SettingsManager.settings
+            .filterNotNull()
             .distinctUntilChangedBy { it.maxStreamBandwidthKb to it.maxConcurrentDownloads }
             .collect { clientFlow.update { createNewClient() } }
     }

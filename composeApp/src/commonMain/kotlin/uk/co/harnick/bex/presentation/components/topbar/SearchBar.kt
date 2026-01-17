@@ -25,7 +25,7 @@ fun SearchBar(
         inputField = {
             SearchBarDefaults.InputField(
                 query = query,
-                onQueryChange = { onUpdateQuery(it) },
+                onQueryChange = onUpdateQuery,
                 onSearch = {},
                 expanded = false,
                 onExpandedChange = {},

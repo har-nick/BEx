@@ -12,6 +12,7 @@ fun DownloadSettingsPanel() {
         Column {
             ExportPathSetting()
             EncodingPrioritySetting()
+//            MaxDownloadsSetting()
         }
     }
 }
