@@ -2,9 +2,10 @@
 # Gradle & Build artifacts
 # =================================================
 .gradle/
+.kotlin/
 build/
 **/build/
-.gradle
+kotlin-js-store
 
 # Local config
 local.properties
