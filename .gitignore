@@ -1,6 +1,92 @@
-build
-kotlin-js-store
+# =================================================
+# Gradle & Build artifacts
+# =================================================
+.gradle/
+build/
+**/build/
 .gradle
-.kotlin
-.idea/artifacts
-.idea/caches
+
+# Local config
+local.properties
+
+# Generated caches
+*.class
+*.dex
+*.apk
+*.ap_
+*.aab
+
+# =================================================
+# Android Studio / IntelliJ / IDE
+# =================================================
+*.iml
+*.ipr
+*.iws
+.idea/
+!.idea/gradle.xml
+!.idea/vcs.xml
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/tasks.xml
+
+# Optional: keep code style if shared
+# .idea/codeStyles/
+
+# =================================================
+# Xcode / iOS
+# =================================================
+*.xcworkspace
+xcuserdata/
+*.xcuserstate
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+DerivedData/
+CocoaPods/Pods/
+Pods/
+
+# iOS packaging
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# Swift package (optional)
+.build/
+
+# =================================================
+# Composer/Node (if using JS)
+# =================================================
+node_modules/
+npm-debug.log
+yarn-error.log
+/dist/
+/build/
+
+# =================================================
+# macOS / OS files
+# =================================================
+.DS_Store
+Thumbs.db
+*.swp
+
+# =================================================
+# Kotlin / KMP specific
+# =================================================
+# (keep shared commonMain sources, ignore generated)
+**/generated/
+
+# secrets / local generated cfg
+**/Secrets.kt
+
+# =================================================
+# CocoaPods artifacts
+# =================================================
+**/Pods/
+**/Manifest.lock
+
+# =================================================
+# Misc
+# =================================================
+captures/
